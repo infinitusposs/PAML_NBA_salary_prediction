@@ -24,7 +24,7 @@ def fetch_dataset():
             'Upload a Dataset', type=['csv', 'txt'])
 
         if (data):
-            df = pd.read_csv(data)
+            df = pd.read_csv(data, index_col=0)
     if df is not None:
         st.session_state['data'] = df
     return df
