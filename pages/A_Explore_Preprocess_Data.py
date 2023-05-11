@@ -60,11 +60,12 @@ if df is not None:
     all_distribution = st.checkbox("Select all", key="all feature distribution")
     if all_distribution:
         feature_distribution_select = numeric_columns
-    fig, ax = plt.subplots(figsize=(12,10))
-    hist = df[feature_distribution_select].hist(ax=ax,
-                                         grid=False)
-    plt.tight_layout()
-    st.pyplot(fig)
+    if feature_distribution_select:
+        fig, ax = plt.subplots(figsize=(12,10))
+        hist = df[feature_distribution_select].hist(ax=ax,
+                                             grid=False)
+        plt.tight_layout()
+        st.pyplot(fig)
     # --------------------------------------------------------------------------
     # Deal with missing values
     st.markdown('### Handle missing values')
