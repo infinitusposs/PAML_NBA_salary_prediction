@@ -2,7 +2,7 @@ import streamlit as st                  # pip install streamlit
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from helper_functions import fetch_dataset
+from helper_functions import *
 
 #############################################
 
@@ -24,12 +24,48 @@ if df is not None:
     # Display original dataframe
     st.markdown('View initial data with missing values or invalid inputs')
     st.markdown('You have uploaded the dataset.')
-    # df.drop(df.columns[0], axis=1, inplace=True)
     st.dataframe(df)
 
+    # Search by player name
+    st.markdown('### Check player stats by name')
+    player_select = st.selectbox(
+        label='Select player name',
+        options=df['Player'].unique(),
+        key=1
+    )
+    st.dataframe(df[df['Player']==player_select])
+    # --------------------------------------------------------------------------
     # Inspect the dataset
-    st.markdown('### Inspect and visualize some interesting features')
+    st.markdown('### Visualize Features')
+    ## Type of chart
+    st.sidebar.header('Select type of chart')
+    chart_select = st.sidebar.selectbox(
+        label='Types of chart',
+        options=['Scatterplot', 'Lineplot', 'Histogram', 'Boxplot']
+    )
 
+    numeric_columns = list(df.select_dtypes(['float', 'int']).columns)
+    ## Specify Input Parameters
+    st.sidebar.header('Specify Input Parameters')
+    ## Draw plots
+    visualize_features(df, chart_select, numeric_columns)
+
+    st.markdown('### Visualize Distribution')
+    ## Type of chart
+    st.sidebar.header('Select type of chart')
+    feature_distribution_select = st.multiselect(
+        label='Select features to visualize distributions',
+        options=numeric_columns
+    )
+    all_distribution = st.checkbox("Select all", key="all feature distribution")
+    if all_distribution:
+        feature_distribution_select = numeric_columns
+    fig, ax = plt.subplots(figsize=(12,10))
+    hist = df[feature_distribution_select].hist(ax=ax,
+                                         grid=False)
+    plt.tight_layout()
+    st.pyplot(fig)
+    # --------------------------------------------------------------------------
     # Deal with missing values
     st.markdown('### Handle missing values')
     
@@ -57,7 +93,7 @@ if df is not None:
                 st.markdown('Drop '+str(num) +' missing values under '+column)
                 drop_missing_values(df, column)
         st.markdown('Finish Handling missing values')
-
+    # --------------------------------------------------------------------------
     # Handle Text and Categorical Attributes
     st.markdown('### Handling Non-numerical Features')
     non_numeric_columns = df.select_dtypes(exclude='number').columns.tolist()
@@ -69,26 +105,27 @@ if df is not None:
         df[feature] = df[feature].astype('category')
         name = feature+'_code'
         df[name] = df[feature].cat.codes
-
+    # --------------------------------------------------------------------------
     # Correlation Heatmap
     st.markdown('### Correlation Heatmap')
     df_numeric = df.select_dtypes(include='number')
+    df_numeric.drop(columns="salary", inplace=True)
     corr = df_numeric.corr()
     inflationAdjSalary_corr = corr['inflationAdjSalary'].sort_values(ascending=False)
     number = st.number_input('Display the top features having the correlation with inflationAdjSalary',
-                             min_value=2, max_value=15, value=11, step=1)
-    st.dataframe(inflationAdjSalary_corr[:number])
+                             min_value=2, max_value=15, value=10, step=1)
+    st.dataframe(inflationAdjSalary_corr[:number+1])
 
     fig, ax = plt.subplots(figsize=(12,10))
-    features = inflationAdjSalary_corr.index[:number]
+    features = inflationAdjSalary_corr.index[:number+1]
     df_select = df[features]
     corr = df_select.corr()
-
+    # --------------------------------------------------------------------------
     # Generate a heatmap of the correlation matrix
     sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
     plt.title('Correlation Heatmap')
     st.write(fig)
-
+    # --------------------------------------------------------------------------
     # Some feature selections/engineerings here
     st.markdown('### Select Relevant/Useful Features')
 
@@ -103,14 +140,14 @@ if df is not None:
     with(col2):
         # Choose from the top corrlation features
         number = st.number_input('Select the top corrlation features for further analysis',
-                                min_value=2, max_value=15, value=11, step=1)
-        features_final = inflationAdjSalary_corr.index[:number]
+                                min_value=2, max_value=15, value=10, step=1)
+        features_final = inflationAdjSalary_corr.index[:number+1]
 
     if select_features:
         df = df[select_features]
     else:
         df = df[features_final]
-    
+    # --------------------------------------------------------------------------
     # Remove outliers
     st.markdown('### Remove outliers')
 
@@ -161,15 +198,19 @@ if df is not None:
     with(MinMaxScalerName):
         if st.button('MinMax Scaler'):
             scaler = MinMaxScaler()
-            X = scaler.fit_transform(X)
+            df.loc[:, ~df.columns.isin(['inflationAdjSalary'])] = scaler.fit_transform(X)
             st.markdown('Finish Normalize')
+            st.session_state.scaler = scaler
     with(StandardScalerName):
         if st.button('Standard Scaler'):
             scaler = StandardScaler()
-            X = scaler.fit_transform(X)
+            df.loc[:, ~df.columns.isin(['inflationAdjSalary'])] = scaler.fit_transform(X)
             st.markdown('Finish Normalize')
+            st.session_state.scaler = scaler
 
     st.markdown('### You have preprocessed the dataset.')
     st.dataframe(df)
+    st.session_state['processed_data'] = df
+    st.session_state['features'] = df.columns[1:]
 
     st.write('Continue to Train Model')

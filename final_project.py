@@ -14,6 +14,10 @@ While many players hire agents to negotiate their contracts, there are still cas
 """)
 st.markdown("Our hope with this project is to provide players and agents with a tool that can help them estimate their salaries more accurately.")
 
+st.markdown('#### Dataset')
+st.write("[NBA Players & Team Data](https://www.kaggle.com/datasets/loganlauton/nba-players-and-team-data?select=NBA+Player+Stats%281950+-+2022%29.csv)")
+st.write("[NBA Players stats since 1950](https://www.kaggle.com/datasets/drgilermo/nba-players-stats?select=Seasons_Stats.csv)")
+
 st.markdown("#### Team")
 st.markdown("Jiarong Chen (jc2924)")
 st.markdown("Yufei Wang (yw569)")
