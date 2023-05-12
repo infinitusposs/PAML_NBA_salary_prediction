@@ -1,4 +1,6 @@
 import streamlit as st                  # pip install streamlit
+import streamlit as st
+from PIL import Image
 
 st.markdown("# Practical Applications of Machine Learning (PAML)")
 
@@ -13,6 +15,13 @@ st.markdown("""Build a machine-learning pipeline that can predict the salaries o
 While many players hire agents to negotiate their contracts, there are still cases where players receive salaries that do not match their performance. 
 """)
 st.markdown("Our hope with this project is to provide players and agents with a tool that can help them estimate their salaries more accurately.")
+
+image = Image.open('NBAimage.jpg')
+
+st.image(image)
+st.write("Image credit:")
+st.write("URL: https://nba.nbcsports.com/2015/11/10/dwyane-wade-kobe-bryant-is-the-greatest-player-of-our-era/")
+st.write("Posted By Dan Feldman")
 
 st.markdown('#### Dataset')
 st.write("[NBA Players & Team Data](https://www.kaggle.com/datasets/loganlauton/nba-players-and-team-data?select=NBA+Player+Stats%281950+-+2022%29.csv)")
