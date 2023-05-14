@@ -38,7 +38,8 @@ if df is not None:
     input_select = st.radio(label="Choose one of the following to enter data",
              options=["Search stats by name and year", "Enter manually"])
 
-    scaler = st.session_state.scaler
+    if 'scaler' in st.session_state:
+        scaler = st.session_state.scaler
     features = st.session_state.features
 
     if input_select == "Search stats by name and year":
@@ -70,7 +71,7 @@ if df is not None:
 
     if input_select == "Enter manually":
         st.markdown("#### 2. Please provide the following data")
-        st.markdown("Please refer to [NBA glossary](https://www.basketball-reference.com/about/glossary.html) about the definition of each field")
+        st.markdown("Please refer to [NBA glossary](https://www.basketball-reference.com/about/glossary.html) about the definition of each field.")
         input_df = pd.DataFrame([], columns=features, index=["input"])
         cols = st.columns(3)
         for i, col in enumerate(features):

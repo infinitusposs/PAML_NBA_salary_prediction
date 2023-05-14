@@ -24,6 +24,8 @@ if df is not None:
     # Display original dataframe
     st.markdown('View initial data with missing values or invalid inputs')
     st.markdown('You have uploaded the dataset.')
+    st.markdown(
+        "Please refer to [NBA glossary](https://www.basketball-reference.com/about/glossary.html) about the definition of each field.")
     st.dataframe(df)
 
     # Search by player name

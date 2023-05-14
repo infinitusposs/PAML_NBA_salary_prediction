@@ -118,8 +118,9 @@ def plot_learning_curve(X_train, X_val, y_train, y_val, trained_model, metrics, 
 
 #############################################
 df = st.session_state['processed_data'] if "processed_data" in st.session_state else None
+trained_models = list(st.session_state.models_trained)if "models_trained" in st.session_state else None
 
-if df is not None:
+if df is not None and trained_models is not None:
     st.markdown("### 1. Choose models")
     X_train = st.session_state.X_train
     y_train = st.session_state.y_train
@@ -127,7 +128,7 @@ if df is not None:
     y_val = st.session_state.y_val
     metric_options = ['mean_absolute_error', 'root_mean_squared_error', 'r2_score']
 
-    trained_models = list(st.session_state.models_trained)
+
 
     # Select a trained classification model for evaluation
     labels_select = st.multiselect(
@@ -155,6 +156,7 @@ if df is not None:
             for label in labels_select:
                 models.append(st.session_state[label])
             eval_df = evaluate(labels_select, models, metric_select, X_train, y_train, X_val, y_val)
+            st.session_state['eval_df'] = eval_df
             st.dataframe(eval_df)
 
             st.markdown('#### Learning curves')
