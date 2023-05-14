@@ -67,13 +67,20 @@ def user_input_features(df, chart_type, x=None, y=None):
     return side_bar_data
 
 def visualize_features(df, chart_select, numeric_columns):
+    df_copy = df.copy()
+    df_copy['salary (million)'] = df_copy['salary'] / 1000000.0
+    df_copy['inflationAdjSalary (million)'] = df_copy['salary'] / 1000000.0
     try:
         if chart_select == "Scatterplot":
             x_values = st.sidebar.selectbox('X axis', options=numeric_columns)
             y_values = st.sidebar.selectbox('Y axis', options=numeric_columns)
-            side_bar_data = user_input_features(df, chart_select, x_values, y_values)
+            if x_values in ['salary', 'inflationAdjSalary']:
+                x_values = x_values + " (million)"
+            if y_values in ['salary', 'inflationAdjSalary']:
+                y_values = y_values + " (million)"
+            side_bar_data = user_input_features(df_copy, chart_select, x_values, y_values)
             plot = px.scatter(
-                data_frame=df,
+                data_frame=df_copy,
                 x=x_values,
                 y=y_values,
                 labels=dict(x=x_values, y=y_values),
@@ -84,9 +91,11 @@ def visualize_features(df, chart_select, numeric_columns):
             st.write(plot)
         elif chart_select == "Histogram":
             x_values = st.sidebar.selectbox('Feature', options=numeric_columns)
-            side_bar_data = user_input_features(df, chart_select, x_values)
+            if x_values in ['salary', 'inflationAdjSalary']:
+                x_values = x_values + " (million)"
+            side_bar_data = user_input_features(df_copy, chart_select, x_values)
             plot = px.histogram(
-                df,
+                df_copy,
                 x=x_values,
                 range_x=[side_bar_data[0][0], side_bar_data[0][1]],
                 title = chart_select + " of " + x_values
@@ -96,9 +105,13 @@ def visualize_features(df, chart_select, numeric_columns):
         elif chart_select == "Lineplot":
             x_values = st.sidebar.selectbox('X axis', options=numeric_columns)
             y_values = st.sidebar.selectbox('Y axis', options=numeric_columns)
-            side_bar_data = user_input_features(df, chart_select, x_values, y_values)
+            if x_values in ['salary', 'inflationAdjSalary']:
+                x_values = x_values + " (million)"
+            if y_values in ['salary', 'inflationAdjSalary']:
+                y_values = y_values + " (million)"
+            side_bar_data = user_input_features(df_copy, chart_select, x_values, y_values)
             plot = px.line(
-                data_frame=df,
+                data_frame=df_copy,
                 x=x_values,
                 y=y_values,
                 labels=dict(x=x_values, y=y_values),
@@ -109,9 +122,11 @@ def visualize_features(df, chart_select, numeric_columns):
             st.write(plot)
         elif chart_select == "Boxplot":
             x_values = st.sidebar.selectbox('Feature', options=numeric_columns)
-            side_bar_data = user_input_features(df, chart_select, x_values)
+            if x_values in ['salary', 'inflationAdjSalary']:
+                x_values = x_values + " (million)"
+            side_bar_data = user_input_features(df_copy, chart_select, x_values)
             plot = px.box(
-                df[df[x_values] <= side_bar_data[0][1]],
+                df_copy[df_copy[x_values] <= side_bar_data[0][1]],
                 y=x_values,
                 range_y=[side_bar_data[0][0], side_bar_data[0][1]],
                 title=chart_select + " of " + x_values

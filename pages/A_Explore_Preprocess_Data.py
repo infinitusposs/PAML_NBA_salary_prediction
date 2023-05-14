@@ -52,7 +52,6 @@ if df is not None:
 
     st.markdown('### Visualize Distribution')
     ## Type of chart
-    st.sidebar.header('Select type of chart')
     feature_distribution_select = st.multiselect(
         label='Select features to visualize distributions',
         options=numeric_columns
