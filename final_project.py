@@ -10,11 +10,20 @@ st.markdown("### Final Project - NBA Salary Prediction")
 
 #############################################
 
-st.markdown("#### Description")
-st.markdown("""Build a machine-learning pipeline that can predict the salaries of NBA players based on their performance and background. 
+st.markdown("#### Introduction")
+st.markdown("""Motivation: Build a machine-learning pipeline that can predict the salaries of NBA players based on their performance and background. 
 While many players hire agents to negotiate their contracts, there are still cases where players receive salaries that do not match their performance. 
 """)
-st.markdown("Our hope with this project is to provide players and agents with a tool that can help them estimate their salaries more accurately.")
+st.markdown("Technical focus: We apply different regression models in this project and we attempt to select important features before fitting our models.")
+st.markdown("Impact: Our hope with this project is to provide players and agents with a tool that can help them estimate their salaries more accurately.")
+
+st.markdown("#### Background")
+st.markdown("""In Papadaki and Tsagris’s work, they pointed out that one of the current problem of NBA salary prediction is that many current solutions fail 
+            to check feature importance before training their models. In terms of the machine learning techniques, they transfer the problem into a 
+            classification problem and predicted the player salaries in percent of the teams payroll instead of salaries.""")
+st.markdown("Compared to their methods, we use a different feature selection method and use regression methods to predict the salary.")
+st.markdown("""Citation: Papadaki, Ioanna, and Michail Tsagris. "Estimating NBA players salary share according to their performance on court: 
+            A machine learning approach." arXiv preprint arXiv:2007.14694 (2020).""")
 
 image = Image.open('NBAimage.jpg')
 
